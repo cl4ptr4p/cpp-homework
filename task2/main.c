@@ -38,18 +38,13 @@ int main(int argc, char *argv[]){
 	char *filename = argv[1];
 	char  *command, *nname, *nnumber, c;
 	int id, i = 0;
-	FILE *in = fopen(filename, "r");
-//	read_file(filename);
-
-
 	struct Note work;
 	while(true){
 	foundflag = false;
 	read_file(filename);
 	command = read(stdin);
-//		scanf("%s", &command);
-//		scanf("%c", &c);
 	if(!strcmp(command, "exit")){
+		write_to_file(filename);
 		return 0;
 	}else if(!strcmp(command, "find")){
 		nname = read(stdin);
@@ -103,8 +98,8 @@ int main(int argc, char *argv[]){
 	fflush(stdout);
 	}
 	return 0;
-	
 }
+
 char* makeNiceNumber(char *number){					//delete unimportant symbols(see checknum)
 	char *b = (char *)malloc(sizeof(char) * strlen(number));
 	int i = 0, j = 0;
@@ -131,21 +126,17 @@ bool checkNum(char *number){									//check the input number(no more than 2 '-'
 		}
 		while(i < strlen(number)){
 			if(isdigit(number[i]) > 0){
-//				continue;
 			}else if(number[i] == '('){
 				if(one){
-//					perror("Please, try again (number)");
 					return false;
 				}else{
 					one = true;
 				}
 			}else if(number[i] == ')'){
 				if(!one){
-//					perror("Please, try again (number)");
 					return false;
 				}else{
 					if(two){
-//						perror("Please, try again (number)");
 						return false;
 					}else{
 						two = true;
@@ -154,13 +145,9 @@ bool checkNum(char *number){									//check the input number(no more than 2 '-'
 			}else if(number[i] == '-'){
 				if(prev != '-'){
 				}else{
-//					perror("Please, try again (incorrect number :  2 adjacent \" - \")");
 					return false;
 				}
 			}else{
-//				perror("Please, try again (number)");
-//				printf("%s\n", number);
-//				system("pause");
 				return false;
 			}
 			prev = number[i];
@@ -178,7 +165,6 @@ bool checkName(char *name){						//check input name(only letters a-z, A-Z)
 		while(i < strlen(name)){
 			if(isalpha(name[i]) > 0){
 			}else{
-//				perror("Please, try again(name) ");
 				return false;
 			}
 			i++;
@@ -241,6 +227,7 @@ char* read(FILE *stream){								//reads 1 word from the stream
 			}
 		}
 	}
+	buf = (char*)realloc(buf, sizeof(char) * (buf_length + 1 ));
 	buf[size] = '\0';
 	return buf;
 }
@@ -311,7 +298,6 @@ void write_to_file(char *filename){
 	struct Note *work = Mybook.tail;
 	struct Note *mem;
 	if(!out){
-//		perror("failed to reopen");
 	}else{
 		while(Mybook.size > 0){
 			fprintf(out, "%d %s %s\n", Mybook.tail->id, Mybook.tail->name, Mybook.tail->number);
@@ -335,7 +321,6 @@ struct Note seekName(char *name){
 			return *work;
 		}
 	}
-//	perror("No such name found");
 	struct Note ans = {0, "", "", NULL, NULL};
 	return ans;
 }
@@ -348,7 +333,6 @@ struct Note seekNum(char *number){
 			return *work;
 		}
 	}
-//	perror("No such number found");
 	struct Note ans = {0, "", "", NULL, NULL};
 	return ans;
 }

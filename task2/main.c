@@ -79,7 +79,8 @@ int main(int argc, char *argv[]){
 		scanf(" %d", &id);
 		exterminate(id);
 	}else if(!strcmp(command, "change")){
-		scanf(" %d %s ", &id, &command);
+		scanf(" %d ", &id);
+		command = read(stdin)
 		if(!strcmp(command, "name")){
 			nname = read(stdin);
 			if(checkName(nname)){

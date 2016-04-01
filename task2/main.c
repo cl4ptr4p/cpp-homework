@@ -36,7 +36,7 @@ void change(bool flag, int id, char *str);
 
 int main(int argc, char *argv[]){
 	char *filename = argv[1];
-	char  command[10], *nname, *nnumber, c;
+	char  *command, *nname, *nnumber, c;
 	int id, i = 0;
 	FILE *in = fopen(filename, "r");
 //	read_file(filename);

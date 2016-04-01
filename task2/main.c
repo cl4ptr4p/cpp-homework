@@ -43,62 +43,63 @@ int main(int argc, char *argv[]){
 
 
 	struct Note work;
-		while(true){
-		foundflag = false;
-		read_file(filename);
-		scanf("%s", &command);
-		scanf("%c", &c);
-		if(!strcmp(command, "exit")){
-			return 0;
-		}else if(!strcmp(command, "find")){
+	while(true){
+	foundflag = false;
+	read_file(filename);
+	command = read(stdin);
+//		scanf("%s", &command);
+//		scanf("%c", &c);
+	if(!strcmp(command, "exit")){
+		return 0;
+	}else if(!strcmp(command, "find")){
+		nname = read(stdin);
+		if(checkNum(nname)){
+			work = seekNum(makeNiceNumber(nname));
+		}else if (checkName(nname)){
+			work = seekName(makeNiceName(nname));
+		}else{
+			perror("Please, try again wrong format ");
+		}
+		if(foundflag){
+			printf("%d %s %s\n", work.id, work.name, work.number);
+		}else{
+			printf("%s\n", "not found");
+		}
+	}else if(!strcmp(command, "create")){
+		nname = read(stdin);
+		nnumber = read(stdin);
+		if((checkName(nname)) && (checkNum(nnumber))){
+			nname = makeNiceName(nname);
+			nnumber = makeNiceNumber(nnumber);
+			add(++Mybook.last_id, nname, nnumber);
+		}else{
+			perror("bad input");
+		}
+	}else if(!strcmp(command, "delete")){
+		scanf(" %d", &id);
+		exterminate(id);
+	}else if(!strcmp(command, "change")){
+		scanf(" %d %s ", &id, &command);
+		if(!strcmp(command, "name")){
 			nname = read(stdin);
-			if(checkNum(nname)){
-				work = seekNum(makeNiceNumber(nname));
-			}else if (checkName(nname)){
-				work = seekName(makeNiceName(nname));
-			}else{
-				perror("Please, try again wrong format ");
-			}
-			if(foundflag){
-				printf("%d %s %s\n", work.id, work.name, work.number);
-			}else{
-				printf("%s\n", "not found");
-			}
-		}else if(!strcmp(command, "create")){
-			nname = read(stdin);
-			nnumber = read(stdin);
-			if((checkName(nname)) && (checkNum(nnumber))){
+			if(checkName(nname)){
 				nname = makeNiceName(nname);
-				nnumber = makeNiceNumber(nnumber);
-				add(++Mybook.last_id, nname, nnumber);
-			}else{
-				perror("bad input");
+				change(0, id, nname);						// 0 - we change name
+			}else{	
+				perror("Please, try again(name empty) ");
 			}
-		}else if(!strcmp(command, "delete")){
-			scanf(" %d", &id);
-			exterminate(id);
-		}else if(!strcmp(command, "change")){
-			scanf(" %d %s ", &id, &command);
-			if(!strcmp(command, "name")){
-				nname = read(stdin);
-				if(checkName(nname)){
-					nname = makeNiceName(nname);
-					change(0, id, nname);						// 0 - we change name
-				}else{	
-					perror("Please, try again(name empty) ");
-				}
-			}else if(!strcmp(command, "number")){
-				nnumber = read(stdin);
-				if(checkNum(nnumber)){
-					nnumber = makeNiceNumber(nnumber);		// 1 - we change name
-					change(1, id, nnumber);
-				}else{
-					perror( "Please, try again (number empty)");
-				}
+		}else if(!strcmp(command, "number")){
+			nnumber = read(stdin);
+			if(checkNum(nnumber)){
+				nnumber = makeNiceNumber(nnumber);		// 1 - we change name
+				change(1, id, nnumber);
+			}else{
+				perror( "Please, try again (number empty)");
 			}
 		}
-		write_to_file(filename);
-		fflush(stdout);
+	}
+	write_to_file(filename);
+	fflush(stdout);
 	}
 	return 0;
 	

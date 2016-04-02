@@ -184,6 +184,9 @@ char* makeNiceName(char *name){
 
 void read_file(char *filename){						//reads the file
 	FILE *stream = fopen(filename, "r");
+	if(stream == NULL){
+		stream = fopen(filename, "w+");	
+	}
 	int i, id, maxid = Mybook.last_id;
 	char *name, *number, *check;
 	while(!feof(stream)){

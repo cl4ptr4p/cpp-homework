@@ -32,74 +32,87 @@ struct Note seekNum(char *a);
 struct Note seekName(char *a);  
 void change(bool flag, int id, char *str);
 
-
-
-int main(int argc, char *argv[]){
-	char *filename = argv[1];
+int main(){
+	char filename[15] = "ink.txt";
 	char  *command, *nname, *nnumber, c;
 	int id, i = 0;
-	struct Note work;
-	while(true){
-	foundflag = false;
-	read_file(filename);
-	command = read(stdin);
-	if(!strcmp(command, "exit")){
-		write_to_file(filename);
-		return 0;
-	}else if(!strcmp(command, "find")){
-		nname = read(stdin);
-		if(checkNum(nname)){
-			work = seekNum(makeNiceNumber(nname));
-		}else if (checkName(nname)){
-			work = seekName(makeNiceName(nname));
-		}else{
-			perror("Please, try again wrong format ");
-		}
-		if(foundflag){
-			printf("%d %s %s\n", work.id, work.name, work.number);
-		}else{
-			printf("%s\n", "not found");
-		}
-	}else if(!strcmp(command, "create")){
-		nname = read(stdin);
-		nnumber = read(stdin);
-		if((checkName(nname)) && (checkNum(nnumber))){
-			nname = makeNiceName(nname);
-			nnumber = makeNiceNumber(nnumber);
-			add(++Mybook.last_id, nname, nnumber);
-		}else{
-			perror("bad input");
-		}
-	}else if(!strcmp(command, "delete")){
-		scanf(" %d", &id);
-		exterminate(id);
-	}else if(!strcmp(command, "change")){
-		scanf(" %d ", &id);
+//	struct Note work;
+		while(true){
+		foundflag = false;
+		read_file(filename);
 		command = read(stdin);
-		if(!strcmp(command, "name")){
+		if(!strcmp(command, "exit")){
+			write_to_file(filename);
+			return 0;
+		}else if(!strcmp(command, "find")){
 			nname = read(stdin);
-			if(checkName(nname)){
+			if(checkNum(nname)){
+				nnumber = makeNiceNumber(nname);
+				struct Note *work1 = Mybook.head;
+				int k;
+				for(k = 0; k < Mybook.size; k++, work1 = work1->next){
+					if(!strcmp(work1->number, nnumber)){
+						foundflag = true;
+						printf("%d %s %s\n", work1->id, work1->name, work1->number);
+					}
+				}
+			}else if (checkName(nname)){
 				nname = makeNiceName(nname);
-				change(0, id, nname);						// 0 - we change name
-			}else{	
-				perror("Please, try again(name empty) ");
-			}
-		}else if(!strcmp(command, "number")){
-			nnumber = read(stdin);
-			if(checkNum(nnumber)){
-				nnumber = makeNiceNumber(nnumber);		// 1 - we change name
-				change(1, id, nnumber);
+				struct Note *work2 = Mybook.head;
+				int j;
+				for(j = 0; j < Mybook.size; j++, work2 = work2->next){
+					if(strstr(work2->name, nname) != NULL){
+						foundflag = true;
+						printf("%d %s %s\n", work2->id, work2->name, work2->number);
+					}
+				}
 			}else{
-				perror( "Please, try again (number empty)");
+				perror("Please, try again wrong format ");
+			}
+			if(foundflag){
+			}else{
+				printf("%s\n", "not found");
+			}
+		}else if(!strcmp(command, "create")){
+			nname = read(stdin);
+			nnumber = read(stdin);
+			if((checkName(nname)) && (checkNum(nnumber))){
+				nname = makeNiceName(nname);
+				nnumber = makeNiceNumber(nnumber);
+				add(++Mybook.last_id, nname, nnumber);
+			}else{
+				perror("bad input");
+			}
+		}else if(!strcmp(command, "delete")){
+			scanf(" %d", &id);
+			exterminate(id);
+		}else if(!strcmp(command, "change")){
+			scanf(" %d ", &id);
+			command = read(stdin);
+			if(!strcmp(command, "name")){
+				nname = read(stdin);
+				if(checkName(nname)){
+					nname = makeNiceName(nname);
+					change(0, id, nname);						// 0 - we change name
+				}else{	
+					perror("Please, try again(name empty) ");
+				}
+			}else if(!strcmp(command, "number")){
+				nnumber = read(stdin);
+				if(checkNum(nnumber)){
+					nnumber = makeNiceNumber(nnumber);		// 1 - we change name
+					change(1, id, nnumber);
+				}else{
+					perror( "Please, try again (number empty)");
+				}
 			}
 		}
-	}
-	write_to_file(filename);
-	fflush(stdout);
+		write_to_file(filename);
+		fflush(stdout);
 	}
 	return 0;
+	
 }
-
 char* makeNiceNumber(char *number){					//delete unimportant symbols(see checknum)
 	char *b = (char *)malloc(sizeof(char) * strlen(number));
 	int i = 0, j = 0;
@@ -144,19 +157,13 @@ bool checkNum(char *number){									//check the input number(no more than 2 '-'
 				}
 			}else if(number[i] == '-'){
 				if(prev != '-'){
-				}else{
-					return false;
-				}
-			}else{
-				return false;
-			}
+				}else{return false;}
+			}else{return false;}
 			prev = number[i];
 			i++;
 		}
 		return true;
-	}else{
-		return false;
-	}
+	}else{return false;}
 }
 
 bool checkName(char *name){						//check input name(only letters a-z, A-Z)
@@ -164,15 +171,11 @@ bool checkName(char *name){						//check input name(only letters a-z, A-Z)
 	if(strlen(name) != 0){
 		while(i < strlen(name)){
 			if(isalpha(name[i]) > 0){
-			}else{
-				return false;
-			}
+			}else{return false;}
 			i++;
 		}
 		return true;
-	}else{
-		return false;
-	}
+	}else{return false;}
 }
 char* makeNiceName(char *name){		
 	int i;// to lower case
@@ -185,10 +188,10 @@ char* makeNiceName(char *name){
 void read_file(char *filename){						//reads the file
 	FILE *stream = fopen(filename, "r");
 	if(stream == NULL){
-		stream = fopen(filename, "w+");	
+		stream = fopen(filename, "w+");
 	}
-	int i, id, maxid = Mybook.last_id;
-	char *name, *number, *check;
+	int id, maxid = Mybook.last_id;
+	char *name, *number;
 	while(!feof(stream)){
 		fscanf(stream, "%d", &id);
 		if(feof(stream)){
@@ -230,14 +233,13 @@ char* read(FILE *stream){								//reads 1 word from the stream
 			}
 		}
 	}
-	buf = (char*)realloc(buf, sizeof(char) * (buf_length + 1 ));
+	buf = (char*)realloc(buf, sizeof(char) * (buf_length + 1));
 	buf[size] = '\0';
 	return buf;
 }
 
 void change(bool flag, int id, char *str){
 	struct Note *newnote = Mybook.head;
-	struct Note sample = flag ? seekNum(str) : seekName(str);
 	int i = 0;
 	while(i < Mybook.size){
 		if(newnote->id == id){
@@ -264,7 +266,7 @@ void add( int id, char* name, char* number){			//add new note to our book
 		Mybook.tail= newnote;
 	}else{
 		Mybook.tail->next = newnote;
-		Mybook.tail = Mybook.tail->next;
+		Mybook.tail = newnote;
 	}
 }
 
@@ -315,27 +317,4 @@ void write_to_file(char *filename){
 		fclose(out);
 	}
 }
-struct Note seekName(char *name){
-	struct Note *work = Mybook.head;
-	int i;
-	for(i = 0; i < Mybook.size; i++, work = work->next){
-		if(strstr(work->name, name) != NULL){
-			foundflag = true;
-			return *work;
-		}
-	}
-	struct Note ans = {0, "", "", NULL, NULL};
-	return ans;
-}
-struct Note seekNum(char *number){
-	struct Note *work = Mybook.head;
-	int i;
-	for(i = 0; i < Mybook.size; i++, work = work->next){
-		if(!strcmp(work->number, number)){
-			foundflag = true;
-			return *work;
-		}
-	}
-	struct Note ans = {0, "", "", NULL, NULL};
-	return ans;
-}
+

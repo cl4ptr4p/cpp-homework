@@ -36,9 +36,10 @@ int rational::gcd(int a, int b){
 
 void rational::simplify(int &a, int &b){
     int tmp = gcd(a, b);
-    if(!tmp) {
+    while(tmp != 1) {
         a /= tmp;
         b /= tmp;
+        tmp = gcd(a, b);
     }
     return;
 }
